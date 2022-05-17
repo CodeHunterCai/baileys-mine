@@ -4,6 +4,8 @@ yarn example
 ```
 example的流程类似用手机扫码登录微信pc端,具体代码参看Example/example.ts
 
+通过启动一个socket不断监听用户对于whatapp的操作,所以对于这个框架的开发在于找到对应的事件监听函数名和操作方法名
+
 其中事件类型名称在src/Types/Events.ts中BaileysEventMap定义,使用不存在的事件名会报错sock.ev.on('groups.update', null)
 
 文件夹定义
