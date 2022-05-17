@@ -14,3 +14,5 @@ Proxy
 messages*.json
 test.ts
 TestData
+auth_info_multi.json
+baileys_store_multi.json
