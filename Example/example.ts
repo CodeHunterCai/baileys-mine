@@ -47,6 +47,7 @@ const startSock = async() => {
 		msgRetryCounterMap,
 		// implement to handle retries
 		getMessage: async key => {
+			log('getMessage')
 			return {
 				conversation: 'hello'
 			}
@@ -67,44 +68,121 @@ const startSock = async() => {
 		await sock.sendMessage(jid, msg)
 	}
 
-	sock.ev.on('call', item => console.log('recv call event', item))
-	sock.ev.on('chats.set', item => console.log(`recv ${item.chats.length} chats (is latest: ${item.isLatest})`))
-	sock.ev.on('messages.set', item => console.log(`recv ${item.messages.length} messages (is latest: ${item.isLatest})`))
-	sock.ev.on('contacts.set', item => console.log(`recv ${item.contacts.length} contacts`))
+	// sock.ev.on('call', item => console.log('recv call event', item))
+	// sock.ev.on('chats.set', item => console.log(`recv ${item.chats.length} chats (is latest: ${item.isLatest})`))
+	// sock.ev.on('messages.set', item => console.log(`recv ${item.messages.length} messages (is latest: ${item.isLatest})`))
+	// sock.ev.on('contacts.set', item => console.log(`recv ${item.contacts.length} contacts`))
 
-	sock.ev.on('messages.upsert', async m => {
-		console.log(JSON.stringify(m, undefined, 2))
+	// sock.ev.on('messages.upsert', async m => {
+	// 	console.log(JSON.stringify(m, undefined, 2))
 
-		const msg = m.messages[0]
-		if(!msg.key.fromMe && m.type === 'notify' && doReplies) {
-			console.log('replying to', m.messages[0].key.remoteJid)
-			await sock!.sendReadReceipt(msg.key.remoteJid, msg.key.participant, [msg.key.id])
-			await sendMessageWTyping({ text: 'Hello there!' }, msg.key.remoteJid)
-		}
+	// 	const msg = m.messages[0]
+	// 	if(!msg.key.fromMe && m.type === 'notify' && doReplies) {
+	// 		console.log('replying to', m.messages[0].key.remoteJid)
+	// 		await sock!.sendReadReceipt(msg.key.remoteJid, msg.key.participant, [msg.key.id])
+	// 		await sendMessageWTyping({ text: 'Hello there!' }, msg.key.remoteJid)
+	// 	}
 
-	})
+	// })
 
-	sock.ev.on('messages.update', m => console.log(m))
-	sock.ev.on('message-receipt.update', m => console.log(m))
-	sock.ev.on('presence.update', m => console.log(m))
-	sock.ev.on('chats.update', m => console.log(m))
-	sock.ev.on('contacts.upsert', m => console.log(m))
+	// sock.ev.on('messages.update', m => console.log(m))
+	// sock.ev.on('message-receipt.update', m => console.log(m))
+	// sock.ev.on('presence.update', m => console.log(m))
+	// sock.ev.on('chats.update', m => console.log(m))
+	// sock.ev.on('contacts.upsert', m => console.log(m))
 
-	sock.ev.on('connection.update', (update) => {
-		const { connection, lastDisconnect } = update
-		if(connection === 'close') {
-			// reconnect if not logged out
-			if((lastDisconnect.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut) {
-				startSock()
-			} else {
-				console.log('Connection closed. You are logged out.')
-			}
-		}
+	// sock.ev.on('connection.update', (update) => {
+	// 	const { connection, lastDisconnect } = update
+	// 	if(connection === 'close') {
+	// 		// reconnect if not logged out
+	// 		if((lastDisconnect.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut) {
+	// 			startSock()
+	// 		} else {
+	// 			console.log('Connection closed. You are logged out.')
+	// 		}
+	// 	}
 
-		console.log('connection update', update)
-	})
+	// 	console.log('connection update', update)
+	// })
 	// listen for when the auth credentials is updated
-	sock.ev.on('creds.update', saveState)
+	// sock.ev.on('creds.update', saveState)
+
+	sock.ev.on('connection.update', m => {
+		log('connection.update')
+		log(m)
+	})
+	sock.ev.on('creds.update', m => {
+		log('creds.update')
+		log(m)
+	})
+	sock.ev.on('chats.set', m => {
+		log('chats.set')
+		log(m)
+	})
+	sock.ev.on('messages.set', m => {
+		log('messages.set')
+		log(m)
+	})
+	sock.ev.on('contacts.set', m => {
+		log('contacts.set')
+		log(m)
+	})
+	sock.ev.on('chats.upsert', m => {
+		log('chats.upsert')
+		log(m)
+	})
+	sock.ev.on('chats.update', m => {
+		log('chats.update')
+		log(m)
+	})
+	sock.ev.on('chats.delete', m => {
+		log('chats.delete')
+		log(m)
+	})
+	sock.ev.on('presence.update', m => {
+		log('presence.update')
+		log(m)
+	})
+	sock.ev.on('contacts.upsert', m => {
+		log('contacts.upsert')
+		log(m)
+	})
+	sock.ev.on('contacts.update', m => {
+		log('contacts.update')
+		log(m)
+	})
+	sock.ev.on('messages.delete', m => {
+		log('messages.delete')
+		log(m)
+	})
+	sock.ev.on('messages.update', m => {
+		log('messages.update')
+		log(m)
+	})
+	sock.ev.on('messages.upsert', m => {
+		log('messages.upsert')
+		log(m)
+	})
+	sock.ev.on('groups.update', m => {
+		log('groups.update')
+		log(m)
+	})
+	sock.ev.on('group-participants.update', m => {
+		log('group-participants.update')
+		log(m)
+	})
+	sock.ev.on('blocklist.set', m => {
+		log('blocklist.set')
+		log(m)
+	})
+	sock.ev.on('blocklist.update', m => {
+		log('blocklist.update')
+		log(m)
+	})
+	sock.ev.on('call', m => {
+		log('call')
+		log(m)
+	})
 
 	return sock
 }
