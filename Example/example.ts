@@ -1,10 +1,15 @@
+// 自定义错误类
 import { Boom } from '@hapi/boom'
 import makeWASocket, { AnyMessageContent, delay, DisconnectReason, fetchLatestBaileysVersion, makeInMemoryStore, MessageRetryMap, useSingleFileAuthState } from '../src'
 import MAIN_LOGGER from '../src/Utils/logger'
+import { log } from '../unit'
 
+// 自定义log
+// https://github.com/pinojs/pino
 const logger = MAIN_LOGGER.child({ })
 logger.level = 'trace'
 
+// 获取启动参数
 const useStore = !process.argv.includes('--no-store')
 const doReplies = !process.argv.includes('--no-reply')
 
@@ -14,13 +19,18 @@ const msgRetryCounterMap: MessageRetryMap = { }
 
 // the store maintains the data of the WA connection in memory
 // can be written out to a file & read from it
+// 在baileys_store_multi.json中记录各个阶段各类消息日志
+// makeInMemoryStore消息日志存储类
 const store = useStore ? makeInMemoryStore({ logger }) : undefined
+
 store?.readFromFile('./baileys_store_multi.json')
 // save every 10s
+// 每隔10s存储一次
 setInterval(() => {
 	store?.writeToFile('./baileys_store_multi.json')
 }, 10_000)
 
+// 这个文件为用户登录凭据文件
 const { state, saveState } = useSingleFileAuthState('./auth_info_multi.json')
 
 // start a connection
