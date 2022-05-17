@@ -107,9 +107,19 @@ const startSock = async() => {
 	// listen for when the auth credentials is updated
 	// sock.ev.on('creds.update', saveState)
 
-	sock.ev.on('connection.update', m => {
-		log('connection.update')
-		log(m)
+	// 影响登录!!!不要修改这里的逻辑
+	sock.ev.on('connection.update', (update) => {
+		const { connection, lastDisconnect } = update
+		if(connection === 'close') {
+			// reconnect if not logged out
+			if((lastDisconnect.error as Boom)?.output?.statusCode !== DisconnectReason.loggedOut) {
+				startSock()
+			} else {
+				console.log('Connection closed. You are logged out.')
+			}
+		}
+
+		console.log('connection update', update)
 	})
 	sock.ev.on('creds.update', m => {
 		log('creds.update')
