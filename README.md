@@ -3,11 +3,15 @@ yarn
 yarn example
 ```
 example的流程类似用手机扫码登录微信pc端,具体代码参看Example/example.ts
+
 其中事件类型名称在src/Types/Events.ts中BaileysEventMap定义,使用不存在的事件名会报错sock.ev.on('groups.update', null)
 
 文件夹定义
+
 /src/Types: 所有用到的参数类型定义
+
 /src/Socket: 整个app使用过程的事件监听和操作定义,按照模块不同分为不同文件,如chats定义了消息部分相关的东西,内部事件通过ev.emit('creds.update', null)触发,在sock.on中接收,类似vue事件机制
+
 /src/Store: 用户信息和消息日志存储相关
 
 # Baileys - Typescript/Javascript WhatsApp Web API
